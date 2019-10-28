@@ -1,6 +1,6 @@
 <?php
 
-namespace Haruncpi\IdGenerator;
+namespace Haruncpi\LaravelIdGenerator;
 
 use DB, Exception;
 

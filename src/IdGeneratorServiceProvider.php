@@ -1,4 +1,4 @@
-<?php namespace Haruncpi\IdGenerator;
+<?php namespace Haruncpi\LaravelIdGenerator;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -13,7 +13,7 @@ class IdGeneratorServiceProvider extends ServiceProvider
     
     public function register()
     {
-        $this->app->make('Haruncpi\IdGenerator\IdGenerator');
+        $this->app->make('Haruncpi\LaravelIdGenerator\IdGenerator');
     }
 
 }

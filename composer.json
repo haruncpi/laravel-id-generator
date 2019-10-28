@@ -16,7 +16,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Haruncpi\\IdGenerator\\IdGeneratorServiceProvider"
+                "Haruncpi\\LaravelIdGenerator\\IdGeneratorServiceProvider"
             ]
         }
     }
