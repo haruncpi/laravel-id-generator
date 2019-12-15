@@ -26,7 +26,7 @@ class IdGenerator
                 throw new Exception('where clause must need at least an array');
         }
 
-
+        $idField = array_key_exists('id', $configArr) ? $configArr['id'] : 'id';
         $prefixLength = strlen($configArr['prefix']);
         $idLength = $configArr['length'] - $prefixLength;
         $whereString = '';
@@ -41,10 +41,10 @@ class IdGenerator
         $whereString = rtrim($whereString, 'AND ');
 
 
-        $total = DB::select("SELECT count(id) total FROM " . $configArr['table'] . $whereString . "");
+        $total = DB::select("SELECT count(".$idField.") total FROM " . $configArr['table'] . $whereString . "");
 
         if ($total[0]->total) {
-            $maxId = DB::select("SELECT MAX(SUBSTR(id," . ($prefixLength + 1) . "," . $idLength . ")) maxId 
+            $maxId = DB::select("SELECT MAX(SUBSTR(".$idField."," . ($prefixLength + 1) . "," . $idLength . ")) maxId 
                             FROM " . $configArr['table'] . $whereString . "");
             $maxId = $maxId[0]->maxId + 1;
 
