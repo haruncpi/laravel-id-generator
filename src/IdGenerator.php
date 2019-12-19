@@ -2,7 +2,7 @@
 
 namespace Haruncpi\LaravelIdGenerator;
 
-use DB, Exception;
+use Illuminate\Support\Facades\DB, Exception;
 
 class IdGenerator
 {
@@ -26,7 +26,7 @@ class IdGenerator
                 throw new Exception('where clause must need at least an array');
         }
 
-
+        $field = array_key_exists('field', $configArr) ? $configArr['field'] : 'id';
         $prefixLength = strlen($configArr['prefix']);
         $idLength = $configArr['length'] - $prefixLength;
         $whereString = '';
@@ -37,15 +37,16 @@ class IdGenerator
                 $whereString .= $row[0] . "=" . $row[1] . " AND ";
             }
         }
-
         $whereString = rtrim($whereString, 'AND ');
 
 
-        $total = DB::select("SELECT count(id) total FROM " . $configArr['table'] . $whereString . "");
+        $totalQuery = sprintf("SELECT count(%s) total FROM %s %s", $field, $configArr['table'], $whereString);
+        $total = DB::select($totalQuery);
 
         if ($total[0]->total) {
-            $maxId = DB::select("SELECT MAX(SUBSTR(id," . ($prefixLength + 1) . "," . $idLength . ")) maxId 
-                            FROM " . $configArr['table'] . $whereString . "");
+            $maxQuery = sprintf("SELECT MAX(SUBSTR(%s,%s,%s)) maxId FROM %s %s",
+                        $field, ($prefixLength + 1), $idLength, $configArr['table'], $whereString);
+            $maxId = DB::select($maxQuery);
             $maxId = $maxId[0]->maxId + 1;
 
             return $configArr['prefix'] . str_pad($maxId, $idLength, '0', STR_PAD_LEFT);
