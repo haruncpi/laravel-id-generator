@@ -12,3 +12,9 @@
 
 ## Documentation
 Get documentation on [laravelarticle.com](https://laravelarticle.com/laravel-custom-id-generator)
+
+## Other Packages
+- [Laravel Log Reader](https://github.com/haruncpi/laravel-log-reader) - A simple and beautiful laravel log reader.
+- [Laravel H](https://github.com/haruncpi/laravel-h) - A helper package for Laravel Framework.
+- [Laravel Simple Filemanager](https://github.com/haruncpi/laravel-simple-filemanager) - A simple filemanager for Laravel.
+- [Laravel Option Framework](https://github.com/haruncpi/laravel-option-framework) - Option framework for Laravel.
