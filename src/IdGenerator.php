@@ -50,8 +50,11 @@ class IdGenerator
         $fieldType = (new self)->getFieldType($table, $field);
         preg_match("/^([\w\-]+)/", $fieldType, $type);
         $tableFieldType = $type[0];
+        if ($fieldType === 'int'){
+        }else{
         preg_match("/(?<=\().+?(?=\))/", $fieldType, $tblFieldLength);
         $tableFieldLength = $tblFieldLength[0];
+        }
 
         if (in_array($tableFieldType, ['int', 'bigint', 'numeric']) && !is_numeric($prefix)) {
             throw new Exception("table field type is $tableFieldType but prefix is string");
