@@ -62,7 +62,7 @@ class IdGenerator
         }
 
         if ($length > $tableFieldLength) {
-            throw new Exception('ID length is bigger then field length');
+            throw new Exception($field . ' length is bigger then field length');
         }
 
         $prefixLength = strlen($configArr['prefix']);
