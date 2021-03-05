@@ -1,25 +1,46 @@
-<?php
-
-namespace Haruncpi\LaravelIdGenerator;
+<?php namespace Haruncpi\LaravelIdGenerator;
 
 use Illuminate\Support\Facades\DB, Exception;
 
 class IdGenerator
 {
-
     private function getFieldType($table, $field)
     {
-        $colsType = DB::select('describe ' . $table);
+        $connection = config('database.default');
+        $driver = DB::connection($connection)->getDriverName();
+        $database = DB::connection($connection)->getDatabaseName();
+
+        if ($driver == 'mysql') {
+            $sql = 'SELECT column_name,data_type,column_type FROM information_schema.columns ';
+            $sql .= 'WHERE table_schema=:database AND table_name=:table';
+        } else {
+            // column_type not available in postgres SQL
+            // table_catalog is database in postgres
+            $sql = 'SELECT column_name,data_type FROM information_schema.columns ';
+            $sql .= 'WHERE table_catalog=:database AND table_name=:table';
+        }
+
+        $rows = DB::select($sql, ['database' => $database, 'table' => $table]);
         $fieldType = null;
-        foreach ($colsType as $col) {
-            if ($field == $col->Field) {
-                $fieldType = $col->Type;
+        $fieldLength = null;
+
+        foreach ($rows as $col) {
+            if ($field == $col->column_name) {
+                $fieldType = $col->data_type;
+                if ($driver == 'mysql') {
+                    //example: column_type int(11) to 11
+                    preg_match("/(?<=\().+?(?=\))/", $col->column_type, $tblFieldLength);
+                    $fieldLength = $tblFieldLength[0];
+                } else {
+                    //column_type not available in postgres SQL
+                    $fieldLength = 32;
+                }
                 break;
             }
         }
 
         if ($fieldType == null) throw new Exception("$field not found in $table table");
-        return $fieldType;
+        return ['type' => $fieldType, 'length' => $fieldLength];
     }
 
     public static function generate($configArr)
@@ -47,18 +68,16 @@ class IdGenerator
         $resetOnPrefixChange = array_key_exists('reset_on_prefix_change', $configArr) ? $configArr['reset_on_prefix_change'] : false;
         $length = $configArr['length'];
 
-        $fieldType = (new self)->getFieldType($table, $field);
-        preg_match("/^([\w\-]+)/", $fieldType, $type);
-        $tableFieldType = $type[0];
-        preg_match("/(?<=\().+?(?=\))/", $fieldType, $tblFieldLength);
-        $tableFieldLength = $tblFieldLength[0];
+        $fieldInfo = (new self)->getFieldType($table, $field);
+        $tableFieldType = $fieldInfo['type'];
+        $tableFieldLength = $fieldInfo['length'];
 
-        if (in_array($tableFieldType, ['int', 'bigint', 'numeric']) && !is_numeric($prefix)) {
-            throw new Exception("table field type is $tableFieldType but prefix is string");
+        if (in_array($tableFieldType, ['int', 'integer', 'bigint', 'numeric']) && !is_numeric($prefix)) {
+            throw new Exception("$field field type is $tableFieldType but prefix is string");
         }
 
         if ($length > $tableFieldLength) {
-            throw new Exception('ID length is bigger then field length');
+            throw new Exception('Generated ID length is bigger then table field length');
         }
 
         $prefixLength = strlen($configArr['prefix']);
