@@ -11,12 +11,12 @@ class IdGenerator
         $database = DB::connection($connection)->getDatabaseName();
 
         if ($driver == 'mysql') {
-            $sql = 'SELECT column_name,data_type,column_type FROM information_schema.columns ';
+            $sql = 'SELECT column_name AS "column_name",data_type AS "data_type",column_type AS "column_type" FROM information_schema.columns ';
             $sql .= 'WHERE table_schema=:database AND table_name=:table';
         } else {
             // column_type not available in postgres SQL
             // table_catalog is database in postgres
-            $sql = 'SELECT column_name,data_type FROM information_schema.columns ';
+            $sql = 'SELECT column_name as "column_name",data_type as "data_type" FROM information_schema.columns ';
             $sql .= 'WHERE table_catalog=:database AND table_name=:table';
         }
 
