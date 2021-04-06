@@ -16,7 +16,7 @@ class IdGenerator
         } else {
             // column_type not available in postgres SQL
             // table_catalog is database in postgres
-            $sql = 'SELECT column_name as "column_name",data_type as "data_type" FROM information_schema.columns ';
+            $sql = 'SELECT column_name AS "column_name",data_type AS "data_type" FROM information_schema.columns ';
             $sql .= 'WHERE table_catalog=:database AND table_name=:table';
         }
 
@@ -98,13 +98,13 @@ class IdGenerator
 
         if ($total[0]->total) {
             if ($resetOnPrefixChange) {
-                $maxQuery = sprintf("SELECT MAX(%s) maxId from %s WHERE %s like %s", $field, $table, $field, "'" . $prefix . "%'");
+                $maxQuery = sprintf("SELECT MAX(%s) AS maxid FROM %s WHERE %s LIKE %s", $field, $table, $field, "'" . $prefix . "%'");
             } else {
-                $maxQuery = sprintf("SELECT MAX(%s) maxId from %s", $field, $table);
+                $maxQuery = sprintf("SELECT MAX(%s) AS maxid FROM %s", $field, $table);
             }
 
             $queryResult = DB::select($maxQuery);
-            $maxFullId = $queryResult[0]->maxId;
+            $maxFullId = $queryResult[0]->maxid;
 
             $maxId = substr($maxFullId, $prefixLength, $idLength);
             return $prefix . str_pad($maxId + 1, $idLength, '0', STR_PAD_LEFT);
