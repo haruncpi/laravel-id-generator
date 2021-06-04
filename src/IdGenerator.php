@@ -107,7 +107,7 @@ class IdGenerator
             $maxFullId = $queryResult[0]->maxid;
 
             $maxId = substr($maxFullId, $prefixLength, $idLength);
-            return $prefix . str_pad($maxId + 1, $idLength, '0', STR_PAD_LEFT);
+            return $prefix . str_pad((int)$maxId + 1, $idLength, '0', STR_PAD_LEFT);
 
         } else {
             return $prefix . str_pad(1, $idLength, '0', STR_PAD_LEFT);
