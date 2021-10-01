@@ -22,19 +22,23 @@ class IdGenerator
 
         $rows = DB::select($sql, ['database' => $database, 'table' => $table]);
         $fieldType = null;
-        $fieldLength = null;
+        $fieldLength = 20;
 
         foreach ($rows as $col) {
             if ($field == $col->column_name) {
+                
                 $fieldType = $col->data_type;
+                //column_type not available in postgres SQL
+                //mysql 8 optional display width for int,bigint numeric field
+
                 if ($driver == 'mysql') {
-                    //example: column_type int(11) to 11
+                    //example: column_type int(11) to 11    
                     preg_match("/(?<=\().+?(?=\))/", $col->column_type, $tblFieldLength);
-                    $fieldLength = $tblFieldLength[0];
-                } else {
-                    //column_type not available in postgres SQL
-                    $fieldLength = 32;
+                    if(count($tblFieldLength)){
+                        $fieldLength = $tblFieldLength[0];
+                    }
                 }
+
                 break;
             }
         }
@@ -94,7 +98,7 @@ class IdGenerator
 
 
         $totalQuery = sprintf("SELECT count(%s) total FROM %s %s", $field, $configArr['table'], $whereString);
-        $total = DB::select($totalQuery);
+        $total = DB::select(trim($totalQuery));
 
         if ($total[0]->total) {
             if ($resetOnPrefixChange) {
