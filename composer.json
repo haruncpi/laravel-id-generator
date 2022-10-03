@@ -1,28 +1,28 @@
 {
-    "name": "haruncpi/laravel-id-generator",
-    "description": "Easy way to generate custom ID in laravel framework",
-    "license": "cc-by-4.0",
-    "authors": [
-        {
-            "name": "Md.Harun-Ur-Rashid",
-            "email": "harun.cox@gmail.com"
-        }
-    ],
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "require": {
-        "php": ">=5.6.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "Haruncpi\\LaravelIdGenerator\\": "src/"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Haruncpi\\LaravelIdGenerator\\IdGeneratorServiceProvider"
-            ]
-        }
+  "name": "jhamnerx/laravel-id-generator-talentus",
+  "description": "Easy way to generate custom ID in laravel framework",
+  "license": "cc-by-4.0",
+  "authors": [
+    {
+      "name": "Jhamner Sifuentes",
+      "email": "jhamnerx1x@gmail.com"
     }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "php": ">=5.6.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Haruncpi\\LaravelIdGenerator\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Haruncpi\\LaravelIdGenerator\\IdGeneratorServiceProvider"
+      ]
+    }
+  }
 }
