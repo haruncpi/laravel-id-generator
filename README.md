@@ -18,3 +18,6 @@ Get documentation on [laravelarticle.com](https://laravelarticle.com/laravel-cus
 - [Laravel H](https://github.com/haruncpi/laravel-h) - A helper package for Laravel Framework.
 - [Laravel Simple Filemanager](https://github.com/haruncpi/laravel-simple-filemanager) - A simple filemanager for Laravel.
 - [Laravel Option Framework](https://github.com/haruncpi/laravel-option-framework) - Option framework for Laravel.
+
+
+Followed Coding Style [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md)

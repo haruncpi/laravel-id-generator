@@ -47,7 +47,6 @@ class IdGenerateTest extends TestCase
         } catch (\Exception $e) {
             $this->assertEquals(0, $e->getCode());
         }
-
     }
 
     public function test_field_not_found()
@@ -72,7 +71,6 @@ class IdGenerateTest extends TestCase
         } catch (\Exception $e) {
             $this->assertStringContainsString("$field field type is", $e->getMessage());
         }
-
     }
 
     public function test_invalid_length()
@@ -84,7 +82,6 @@ class IdGenerateTest extends TestCase
         } catch (\Exception $e) {
             $this->assertStringContainsString("Generated ID length is bigger then table field length", $e->getMessage());
         }
-
     }
 
     public function test_ID_generated()
@@ -93,7 +90,6 @@ class IdGenerateTest extends TestCase
         $config = ['table' => $this->testTable, 'prefix' => 101, 'length' => 10];
         $id = IdGenerator::generate($config);
         $this->assertEquals($id, $id);
-
     }
 
     public function test_ID_incremented()
@@ -108,7 +104,6 @@ class IdGenerateTest extends TestCase
 
         DB::rollBack();
         $this->assertEquals($id1 + 1, $id2);
-
     }
 
     public function test_ID_reset_on_prefix_change()
@@ -127,6 +122,5 @@ class IdGenerateTest extends TestCase
 
         DB::rollBack();
         $this->assertNotEquals($id2 + 1, $resetID);
-
     }
 }
