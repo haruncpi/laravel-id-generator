@@ -20,9 +20,8 @@ class IdGenerator
      *
      * @since 1.0.0
      */
-    private function getFieldType($table, $field)
+    private function getFieldType($table, $field, $connection)
     {
-        $connection = config('database.default');
         $driver = DB::connection($connection)->getDriverName();
         $database = DB::connection($connection)->getDatabaseName();
 
@@ -37,7 +36,7 @@ class IdGenerator
             $sql .= 'WHERE table_catalog=:database AND table_name=:table';
         }
 
-        $rows = DB::select($sql, ['database' => $database, 'table' => $table]);
+        $rows = DB::connection($connection)->select($sql, ['database' => $database, 'table' => $table]);
         $fieldType = null;
         $fieldLength = 20;
 
@@ -98,13 +97,15 @@ class IdGenerator
 
         $table = $configArr['table'];
         $field = array_key_exists('field', $configArr) ? $configArr['field'] : 'id';
+        $connection = array_key_exists('connection', $configArr) ? $configArr['connection'] : config('database.default');
+
         $prefix = $configArr['prefix'];
         $resetOnPrefixChange =  array_key_exists('reset_on_prefix_change', $configArr)
                                 ? $configArr['reset_on_prefix_change']
                                 : false;
         $length = $configArr['length'];
 
-        $fieldInfo = (new self)->getFieldType($table, $field);
+        $fieldInfo = (new self)->getFieldType($table, $field, $connection);
         $tableFieldType = $fieldInfo['type'];
         $tableFieldLength = $fieldInfo['length'];
 
@@ -130,7 +131,7 @@ class IdGenerator
 
 
         $totalQuery = sprintf("SELECT count(%s) total FROM %s %s", $field, $configArr['table'], $whereString);
-        $total = DB::select(trim($totalQuery));
+        $total = DB::connection($connection)->select(trim($totalQuery));
 
         if ($total[0]->total) {
             if ($resetOnPrefixChange) {
@@ -140,7 +141,7 @@ class IdGenerator
                 $maxQuery = sprintf("SELECT MAX(%s) AS maxid FROM %s", $field, $table);
             }
 
-            $queryResult = DB::select($maxQuery);
+            $queryResult = DB::connection($connection)->select($maxQuery);
             $maxFullId = $queryResult[0]->maxid;
 
             $maxId = substr($maxFullId, $prefixLength, $idLength);
